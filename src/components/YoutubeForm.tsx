@@ -103,6 +103,7 @@ export const YoutubeForm = () => {
                 value: true,
                 message: 'Username is required',
               },
+              disabled: true,
             })}
           />
           <p className='error'>{errors.username?.message}</p>
@@ -181,6 +182,7 @@ export const YoutubeForm = () => {
                 value: true,
                 message: 'twitter is required',
               },
+              disabled: watch('channel') === '',
             })}
           />
 
