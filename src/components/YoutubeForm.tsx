@@ -42,8 +42,18 @@ export const YoutubeForm = () => {
       };
     },
   });
-  const { register, control, handleSubmit, formState, watch, getValues } = form;
-  const { errors } = formState;
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState,
+    watch,
+    getValues,
+    setValue,
+  } = form;
+  const { errors, touchedFields, dirtyFields, isDirty } = formState;
+  console.log({ touchedFields, dirtyFields, isDirty });
+
   // const { name, ref, onChange, onBlur } = register('username');
 
   const { fields, append, remove } = useFieldArray({
@@ -57,6 +67,14 @@ export const YoutubeForm = () => {
 
   const handleGetValue = () => {
     console.log('Get Values', getValues('social.twitter'));
+  };
+
+  const handleSetValue = () => {
+    setValue('username', '', {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    });
   };
 
   // useEffect(() => {
@@ -263,6 +281,10 @@ export const YoutubeForm = () => {
         <button>Submit</button>
         <button type='button' onClick={handleGetValue}>
           Get Values
+        </button>
+
+        <button type='button' onClick={handleSetValue}>
+          Set Values
         </button>
       </form>
       <DevTool control={control} />
