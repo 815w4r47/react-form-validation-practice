@@ -41,6 +41,7 @@ export const YoutubeForm = () => {
         dob: new Date(),
       };
     },
+    mode: 'onSubmit',
   });
   const {
     register,
@@ -50,9 +51,23 @@ export const YoutubeForm = () => {
     watch,
     getValues,
     setValue,
+    reset,
+    trigger,
   } = form;
-  const { errors, touchedFields, dirtyFields, isDirty, isValid } = formState;
-  console.log({ touchedFields, dirtyFields, isDirty, isValid });
+  const {
+    errors,
+    touchedFields,
+    dirtyFields,
+    isDirty,
+    isValid,
+    isSubmitting,
+    isSubmitted,
+    isSubmitSuccessful,
+    submitCount,
+  } = formState;
+
+  console.log({ isSubmitSuccessful, isSubmitted, isSubmitting, submitCount });
+  // console.log({ touchedFields, dirtyFields, isDirty, isValid });
 
   // const { name, ref, onChange, onBlur } = register('username');
 
@@ -80,6 +95,12 @@ export const YoutubeForm = () => {
       shouldTouch: true,
     });
   };
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [isSubmitSuccessful, reset]);
 
   // useEffect(() => {
   //   const subscription = watch((value) => {
@@ -136,6 +157,13 @@ export const YoutubeForm = () => {
                     !fieldvalue.endsWith('baddomain.com') ||
                     'This domain is blacklisted'
                   );
+                },
+                emailAvailable: async (fieldvalue) => {
+                  const response = await fetch(
+                    `https://jsonplaceholder.typicode.com/users?email=${fieldvalue}`,
+                  );
+                  const data = await response.json();
+                  return data.lenght == 0 || 'Email already exists';
                 },
               },
             })}
@@ -284,13 +312,19 @@ export const YoutubeForm = () => {
           <p className='error'>{errors.dob?.message}</p>
         </div>
 
-        <button disabled={!isDirty || !isValid}>Submit</button>
+        <button disabled={!isDirty || isSubmitting}>Submit</button>
+        <button type='button' onClick={() => reset()}>
+          Reset
+        </button>
         <button type='button' onClick={handleGetValue}>
           Get Values
         </button>
 
         <button type='button' onClick={handleSetValue}>
           Set Values
+        </button>
+        <button type='button' onClick={() => trigger()}>
+          Validate
         </button>
       </form>
       <DevTool control={control} />
